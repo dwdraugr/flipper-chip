@@ -5,6 +5,7 @@
 #include <lib/toolbox/args.h>
 #include <storage/storage.h>
 #include "chip8.h"
+#include "emulator-core/flipper-chip.h"
 
 #define TAG "Chip8Emulator"
 #define WORKER_TAG TAG "Worker"
@@ -19,6 +20,7 @@ struct Chip8Emulator {
     Chip8State st;
     string_t file_path;
     FuriThread* thread;
+    t_chip8_state* t_chip8_st
 };
 
 
