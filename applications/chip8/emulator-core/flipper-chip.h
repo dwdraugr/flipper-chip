@@ -22,48 +22,49 @@
 
 #define KEYS_NUMBER 0x10
 
-typedef struct s_flipper_state {
-	uint16_t I;
-	uint16_t PC;
-	uint8_t SP;
-	uint8_t V[CPU_REGISTER_NUMBER];
-	uint16_t stack[CPU_STACK_DEPTH];
-	uint8_t memory[MEMORY_SIZE];
-	uint8_t delay_timer;
-	uint8_t sound_timer;
-	uint8_t screen[SCREEN_HEIGHT][SCREEN_WIDTH];
-	uint8_t key[KEYS_NUMBER];
-	bool stop;
-} t_flipper_state;
+typedef struct s_flipper_state
+{
+    uint16_t I;
+    uint16_t PC;
+    uint8_t SP;
+    uint8_t* V; // CPU_REGISTER_NUMBER
+    uint16_t* stack; // CPU_STACK_DEPTH
+    uint8_t* memory; // MEMORY_SIZE
+    uint8_t delay_timer;
+    uint8_t sound_timer;
+    uint8_t **screen; // SCREEN_HEIGHT * SCREEN_WIDTH
+    uint8_t *key; // KEYS_NUMBER
+} t_chip8_state;
 
 // keyboard layout
 // 1  2  3  C
 // 4  5  6  D
 // 7  8  9  E
 // A  0  B  F
-typedef enum e_keys {
-	k_x,
-	k_1,
-	k_2,
-	k_3,
-	k_q,
-	k_w,
-	k_e,
-	k_a,
-	k_s,
-	k_d,
-	k_z,
-	k_c,
-	k_4,
-	k_r,
-	k_f,
-	k_v,
+typedef enum e_keys
+{
+    k_x,
+    k_1,
+    k_2,
+    k_3,
+    k_q,
+    k_w,
+    k_e,
+    k_a,
+    k_s,
+    k_d,
+    k_z,
+    k_c,
+    k_4,
+    k_r,
+    k_f,
+    k_v,
 } t_keys;
 
-void init(t_flipper_state *flipper);
-bool load_game(t_flipper_state *state, const char *filename);
-void execute_next_opcode(t_flipper_state *state);
-void tick(t_flipper_state* state);
-uint8_t** get_screen(t_flipper_state* state);
+void init(t_chip8_state *state, void* (*system_malloc)(size_t));
+bool load_game(t_chip8_state *state, const char *filename, int rom_size);
+void execute_next_opcode(t_chip8_state *state);
+void tick(t_chip8_state* state);
+uint8_t** get_screen(t_chip8_state* state);
 
 #endif //FLIPPER_CHIP_FLIPPER_CHIP_H

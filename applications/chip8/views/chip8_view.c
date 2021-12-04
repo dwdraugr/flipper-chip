@@ -31,16 +31,16 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
         canvas_draw_icon(canvas, 4, 22, &I_Error_18x18);
     }
 
-    // for (int y = 0; y < CHIP8_SCREEN_H; y++) {
-    //     for (int x = 0; x < CHIP8_SCREEN_H; x++) {
-    //         if (model->state.screen[y][x] == 1) {
-    //             canvas_set_color(canvas, ColorBlack);
-    //         } else {
-    //             canvas_set_color(canvas, ColorWhite);
-    //         }
-    //         canvas_draw_dot(canvas, x, y);
-    //     }
-    // }
+     for (int y = 0; y < CHIP8_SCREEN_H; y++) {
+         for (int x = 0; x < CHIP8_SCREEN_H; x++) {
+             if (model->state.screen[y][x] == 1) {
+                 canvas_set_color(canvas, ColorBlack);
+             } else {
+                 canvas_set_color(canvas, ColorWhite);
+             }
+             canvas_draw_dot(canvas, x, y);
+         }
+     }
 }
 
 static bool chip8_input_callback(InputEvent* event, void* context) {
