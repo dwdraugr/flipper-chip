@@ -20,7 +20,7 @@ struct Chip8Emulator {
     Chip8State st;
     string_t file_path;
     FuriThread* thread;
-    t_chip8_state* t_chip8_st
+    t_chip8_state* t_chip8_st;
 };
 
 
@@ -34,8 +34,6 @@ static int32_t chip8_worker(void* context) {
 
 
     while(1) {
-        // chip8_internall_process();
-        // chip8->st.screen = chip8_internal_get();
         if (chip8->st.worker_state == WorkerStateBackPressed) {
             break;
         }
@@ -66,9 +64,13 @@ static int32_t chip8_worker(void* context) {
             uint8_t* rom_data = furi_alloc(2048);
             FURI_LOG_I(WORKER_TAG, "2048 array gotten");
 
-            read_rom_data(rom_file, rom_data);
+            int rom_len = read_rom_data(rom_file, rom_data);
 
             FURI_LOG_I(WORKER_TAG, "Rom data finished reading");
+
+            FURI_LOG_I(WORKER_TAG, "Load chip8 core data");
+            t_chip8_load_game(chip8->t_chip8_st, rom_data, rom_len);
+            FURI_LOG_I(WORKER_TAG, "chip8 core data loaded");
 
             chip8->st.worker_state = WorkerStateRomLoaded;
 
@@ -79,12 +81,17 @@ static int32_t chip8_worker(void* context) {
             //     chip8->st.screen[y] = furi_alloc(32);
             // }
         }
+
+        if (chip8->st.worker_state == WorkerStateRomLoaded) {
+            //t_chip8_execute_next_opcode();
+        }
         
     }
 
 
     // storage_file_close(rom_file);
     // storage_file_free(rom_file);
+    //t_chip8_free_memory(chip8->t_chip8_st, free);
 
     return 0;
 }
@@ -97,6 +104,8 @@ Chip8Emulator* chip8_make_emulator(string_t file_path) {
     string_init(chip8->file_path);
     string_set(chip8->file_path, file_path);
     chip8->st.worker_state = WorkerStateLoadingRom;
+
+    chip8->t_chip8_st = t_chip8_init(furi_alloc);
 
     chip8->thread = furi_thread_alloc();
     furi_thread_set_name(chip8->thread, "Chip8Worker");
