@@ -13,7 +13,7 @@ static uint8_t randbyte();
 static void draw_sprite(t_chip8_state *state, uint8_t x, uint8_t y, uint8_t n);
 static void error_stop(t_chip8_state *state, uint16_t opcode);
 
-t_chip8_state* init(void* (*system_malloc)(size_t))
+t_chip8_state* t_chip8_init(void* (*system_malloc)(size_t))
 {
     t_chip8_state* state = system_malloc(sizeof(t_chip8_state));
 
@@ -45,7 +45,7 @@ t_chip8_state* init(void* (*system_malloc)(size_t))
     return state;
 }
 
-bool load_game(t_chip8_state *state, const char *rom, int rom_size)
+bool t_chip8_load_game(t_chip8_state *state, const char *rom, int rom_size)
 {
     if (MEMORY_ROM_SIZE < rom_size)
     {
@@ -55,7 +55,7 @@ bool load_game(t_chip8_state *state, const char *rom, int rom_size)
     return true;
 }
 
-void free_memory(t_chip8_state* state, void (*system_free)(void*))
+void t_chip8_free_memory(t_chip8_state* state, void (*system_free)(void*))
 {
     system_free(state->memory);
     for(int i = 0; i < SCREEN_HEIGHT; i++)
@@ -66,9 +66,10 @@ void free_memory(t_chip8_state* state, void (*system_free)(void*))
     system_free(state->V);
     system_free(state->key);
     system_free(state->stack);
+    system_free(state);
 }
 
-void execute_next_opcode(t_chip8_state *state)
+void t_chip8_execute_next_opcode(t_chip8_state *state)
 {
     static bool isWaitInput = false;
     static uint8_t register_number = 255;
@@ -268,7 +269,7 @@ void execute_next_opcode(t_chip8_state *state)
     }
 }
 
-void tick(t_chip8_state* state)
+void t_chip8_tick(t_chip8_state* state)
 {
     if (state->delay_timer > 0)
     {
@@ -280,7 +281,7 @@ void tick(t_chip8_state* state)
     }
 }
 
-uint8_t** get_screen(t_chip8_state* state)
+uint8_t** t_chip8_get_screen(t_chip8_state* state)
 {
     return (uint8_t **) state->screen;
 }
