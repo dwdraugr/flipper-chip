@@ -33,7 +33,7 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
                     canvas_set_color(canvas, ColorWhite);
                 }
 
-                canvas_draw_box(canvas, x, y, 2, 2) {
+                canvas_draw_box(canvas, x, y, 2, 2);
                 //canvas_draw_dot(canvas, x, y);
             }
         }
