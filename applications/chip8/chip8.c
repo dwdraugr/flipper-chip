@@ -72,13 +72,6 @@ static int32_t chip8_worker(void* context) {
             FURI_LOG_I(WORKER_TAG, "chip8 core data loaded");
 
             chip8->st.worker_state = WorkerStateRomLoaded;
-
-
-            // uint16_t rom_size = read_rom_data(rom_file, rom_data);
-            // chip8->st.screen = furi_alloc(64);
-            // for (int y = 0; y < 64; y++) {
-            //     chip8->st.screen[y] = furi_alloc(32);
-            // }
         }
 
         if (chip8->st.worker_state == WorkerStateRomLoaded) {

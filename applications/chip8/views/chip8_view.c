@@ -15,7 +15,10 @@ typedef struct {
 } Chip8Model;
 
 static void chip8_draw_callback(Canvas* canvas, void* _model) {
-    Chip8Model* model = _model;
+    Chip8Model* model = aquire_mutex((ValueMutex*)_model, 25);
+    if (model == NULL) {
+        return;
+    }
 
     if (model->state.worker_state == WorkerStateLoadingRom) {
         canvas_draw_icon(canvas, 4, 22, &I_Clock_18x18);
@@ -40,6 +43,7 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
         canvas_draw_icon(canvas, 4, 22, &I_Error_18x18);
     }
 
+    release_mutex((ValueMutex*)_model, model);
 }
 
 static bool chip8_input_callback(InputEvent* event, void* context) {
