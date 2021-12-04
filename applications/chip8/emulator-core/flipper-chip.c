@@ -74,11 +74,6 @@ void t_chip8_execute_next_opcode(t_chip8_state *state)
     static bool isWaitInput = false;
     static uint8_t register_number = 255;
 
-    if (t_chip8_is_rendering)
-    {
-        return;
-    }
-
     uint16_t opcode = state->memory[state->PC] << 8 | state->memory[state->PC + 1];
     uint8_t x = (opcode >> 8) & 0x000F;
     uint8_t y = (opcode >> 4) & 0x000F;
