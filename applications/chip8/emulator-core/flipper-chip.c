@@ -94,7 +94,10 @@ void t_chip8_execute_next_opcode(t_chip8_state *state)
         switch (kk)
         {
         case 0x00E0:
-            memset(state->screen, 0, SCREEN_SIZE);
+            for (int i = 0; i < SCREEN_HEIGHT; i++)
+            {
+                memset(state->screen[i], 0, SCREEN_WIDTH);
+            }
             state->PC += 2;
             break;
         case 0x00EE:
