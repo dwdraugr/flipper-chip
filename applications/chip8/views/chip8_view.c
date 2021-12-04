@@ -15,7 +15,7 @@ typedef struct {
 } Chip8Model;
 
 static void chip8_draw_callback(Canvas* canvas, void* _model) {
-    Chip8Model* model = aquire_mutex((ValueMutex*)_model, 25);
+    Chip8Model* model = acquire_mutex((ValueMutex*)_model, 25);
     if (model == NULL) {
         return;
     }
