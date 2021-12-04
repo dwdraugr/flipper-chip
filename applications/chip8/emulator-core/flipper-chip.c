@@ -45,7 +45,7 @@ t_chip8_state* t_chip8_init(void* (*system_malloc)(size_t))
     return state;
 }
 
-bool t_chip8_load_game(t_chip8_state *state, const char *rom, int rom_size)
+bool t_chip8_load_game(t_chip8_state *state, const uint8_t *rom int rom_size)
 {
     if (MEMORY_ROM_SIZE < rom_size)
     {

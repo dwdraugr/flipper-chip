@@ -62,7 +62,7 @@ typedef enum e_keys
 } t_keys;
 
 t_chip8_state* t_chip8_init(void* (*system_malloc)(size_t));
-bool t_chip8_load_game(t_chip8_state *state, const char *filename, int rom_size);
+bool t_chip8_load_game(t_chip8_state *state, const uint8_t *rom, int rom_size);
 void t_chip8_execute_next_opcode(t_chip8_state *state);
 void t_chip8_tick(t_chip8_state* state);
 uint8_t** t_chip8_get_screen(t_chip8_state* state);
