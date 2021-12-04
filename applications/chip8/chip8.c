@@ -30,6 +30,9 @@ static int32_t chip8_worker(void* context) {
     Storage* furi_storage_record = furi_record_open("storage");
     FURI_LOG_I(WORKER_TAG, "furi record opened");
 
+    FURI_LOG_I(WORKER_TAG, "Start storage file alloc");
+    File* rom_file = storage_file_alloc(furi_storage_record);
+    FURI_LOG_I(WORKER_TAG, "Start storage file open, path = %s", chip8->file_path);
 
 
     while(1) {
@@ -38,9 +41,6 @@ static int32_t chip8_worker(void* context) {
         }
 
         if (chip8->st.worker_state == WorkerStateLoadingRom) {
-            FURI_LOG_I(WORKER_TAG, "Start storage file alloc");
-            File* rom_file = storage_file_alloc(furi_storage_record);
-            FURI_LOG_I(WORKER_TAG, "Start storage file open, path = %s", chip8->file_path);
             bool is_file_opened = storage_file_open(
                                 rom_file,
                                 string_get_cstr(chip8->file_path),
@@ -76,15 +76,16 @@ static int32_t chip8_worker(void* context) {
 
         if (chip8->st.worker_state == WorkerStateRomLoaded) {
             t_chip8_execute_next_opcode(chip8->st.t_chip8_state);
-            t_chip8_tick(chip8->st.t_chip8_state);
+            //t_chip8_tick(chip8->st.t_chip8_state);
+            FURI_LOG_I(WORKER_TAG, "EXECUTE ONE OPCODE");
         }
         
     }
 
 
-    // storage_file_close(rom_file);
-    // storage_file_free(rom_file);
-    //t_chip8_free_memory(chip8->t_chip8_st, free);
+    storage_file_close(rom_file);
+    storage_file_free(rom_file);
+    t_chip8_free_memory(chip8->st.t_chip8_state, free);
 
     return 0;
 }

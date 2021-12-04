@@ -38,6 +38,7 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
             }
         }
         t_chip8_toggle_rendering();
+        FURI_LOG_I(WORKER_TAG, "ONE RENDER ITERATION");
     }
 
     if (model->state.worker_state == WorkerStateRomLoadError) {
