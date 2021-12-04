@@ -67,5 +67,6 @@ void t_chip8_execute_next_opcode(t_chip8_state *state);
 void t_chip8_tick(t_chip8_state* state);
 uint8_t** t_chip8_get_screen(t_chip8_state* state);
 void t_chip8_free_memory(t_chip8_state* state, void (*system_free)(void*));
+void t_chip8_toggle_rendering();
 
 #endif //FLIPPER_CHIP_FLIPPER_CHIP_H

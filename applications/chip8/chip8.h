@@ -24,7 +24,6 @@ typedef enum {
 typedef struct {
     WorkerState worker_state;
     t_chip8_state* t_chip8_state;
-    osMutexId_t* mtx;
 } Chip8State;
 
 Chip8Emulator* chip8_make_emulator(string_t file_path);

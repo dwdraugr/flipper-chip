@@ -18,9 +18,7 @@ bool chip8_scene_work_on_event(void* context, SceneManagerEvent event) {
     } else if(event.type == SceneManagerEventTypeTick) {
         Chip8State* state = chip8_get_state(app->chip8);
 
-        furi_check(osMutexAcquire(state->mtx, osWaitForever) == osOK);
         chip8_set_state(app->chip8_view, state);
-        furi_check(osMutexRelease(state->mtx) == osOK);
     }
     return consumed;
 }
