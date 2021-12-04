@@ -68,7 +68,7 @@ static int32_t chip8_worker(void* context) {
             FURI_LOG_I(WORKER_TAG, "Rom data finished reading");
 
             FURI_LOG_I(WORKER_TAG, "Load chip8 core data");
-            t_chip8_load_game(chip8->t_chip8_st, rom_data, rom_len);
+            t_chip8_load_game(chip8->st.t_chip8_state, rom_data, rom_len);
             FURI_LOG_I(WORKER_TAG, "chip8 core data loaded");
 
             chip8->st.worker_state = WorkerStateRomLoaded;
@@ -82,8 +82,8 @@ static int32_t chip8_worker(void* context) {
         }
 
         if (chip8->st.worker_state == WorkerStateRomLoaded) {
-            t_chip8_execute_next_opcode(chip8->t_chip8_st);
-            t_chip8_tick(chip8->t_chip8_st);
+            t_chip8_execute_next_opcode(chip8->st.t_chip8_state);
+            t_chip8_tick(chip8->st.t_chip8_state);
         }
         
     }
