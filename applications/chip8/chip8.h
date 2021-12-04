@@ -8,10 +8,21 @@ extern "C" {
 #include <m-string.h>
 #include <storage/storage.h>
 
+#define CHIP8_SCREEN_W 64
+#define CHIP8_SCREEN_H 32
+
 typedef struct Chip8Emulator Chip8Emulator;
 
-typedef struct {
+typedef enum {
+    WorkerStateLoadingRom,
+    WorkerStateRomLoaded,
+    WorkerStateRomLoadError,
+    WorkerStateBackPressed,
+} WorkerState;
 
+typedef struct {
+    WorkerState worker_state;
+    uint8_t** screen;
 } Chip8State;
 
 Chip8Emulator* chip8_make_emulator(string_t file_path);

@@ -25,30 +25,48 @@ struct Chip8Emulator {
 static int32_t chip8_worker(void* context) {
     Chip8Emulator* chip8= context;
 
-    File* rom_file = storage_file_alloc(furi_record_open("storage"));
-    bool is_file_opened = storage_file_open(
-                        rom_file,
-                        string_get_cstr(chip8->file_path),
-                        FSAM_READ,
-                        FSOM_OPEN_EXISTING
-                   );
 
-    if (!is_file_opened) {
-        storage_file_close(rom_file);
-        storage_file_free(rom_file);
-        return 0;
-    }
+    // File* rom_file = storage_file_alloc(furi_record_open("storage"));
+    // bool is_file_opened = storage_file_open(
+    //                     rom_file,
+    //                     string_get_cstr(chip8->file_path),
+    //                     FSAM_READ,
+    //                     FSOM_OPEN_EXISTING
+    //                );
 
-    uint8_t rom_data[2048];
+
+    // if (!is_file_opened) {
+    //     FURI_LOG_I(WORKER_TAG, "Cannot open storage");
+    //     storage_file_close(rom_file);
+    //     storage_file_free(rom_file);
+    //     return 0;
+    // }
+
+
+    //uint8_t rom_data[2048];
     //uint16_t rom_size = read_rom_data(rom_file, rom_data);
-    read_rom_data(rom_file, rom_data);
+    //read_rom_data(rom_file, rom_data);
+    // chip8->st.screen = furi_alloc(64);
+    // for (int y = 0; y < 64; y++) {
+    //     chip8->st.screen[y] = furi_alloc(32);
+    // }
+
 
     while(1) {
-        break;
+        // chip8_internall_process();
+        // chip8->st.screen = chip8_internal_get();
+        if (chip8->st.worker_state == WorkerStateBackPressed) {
+            break;
+        }
+
+        if (chip8->st.worker_state == WorkerStateLoadingRom) {
+            chip8->st.worker_state = WorkerStateRomLoaded;
+        }
     }
 
-    storage_file_close(rom_file);
-    storage_file_free(rom_file);
+
+    // storage_file_close(rom_file);
+    // storage_file_free(rom_file);
 
     return 0;
 }
@@ -59,6 +77,7 @@ Chip8Emulator* chip8_make_emulator(string_t file_path) {
     Chip8Emulator* chip8 = furi_alloc(sizeof(Chip8Emulator));
     string_init(chip8->file_path);
     string_set(chip8->file_path, file_path);
+    chip8->st.worker_state = WorkerStateLoadingRom;
 
     chip8->thread = furi_thread_alloc();
     furi_thread_set_name(chip8->thread, "Chip8Worker");
