@@ -1,6 +1,7 @@
 #include <gui/elements.h>
 #include "chip8_view.h"
 #include "../chip8.h"
+#include "../emulator-core/flipper-chip.h"
 
 struct Chip8View {
     View* view;
@@ -16,31 +17,29 @@ typedef struct {
 static void chip8_draw_callback(Canvas* canvas, void* _model) {
     Chip8Model* model = _model;
 
-
-    FURI_LOG_I("Chip8", "DRAW state number = %d", model->state.worker_state);
-
     if (model->state.worker_state == WorkerStateLoadingRom) {
         canvas_draw_icon(canvas, 4, 22, &I_Clock_18x18);
     }
 
     if (model->state.worker_state == WorkerStateRomLoaded) {
-        canvas_draw_icon(canvas, 4, 19, &I_EviSmile1_18x21);
+        uint8_t** screen = t_chip8_get_screen(model->state.t_chip8_state);
+
+        for (int y = 0; y < CHIP8_SCREEN_H; y++) {
+            for (int x = 0; x < CHIP8_SCREEN_W; x++) {
+                if (screen[y][x] == 1) {
+                    canvas_set_color(canvas, ColorBlack);
+                } else {
+                    canvas_set_color(canvas, ColorWhite);
+                }
+                canvas_draw_dot(canvas, x, y);
+            }
+        }
     }
 
     if (model->state.worker_state == WorkerStateRomLoadError) {
         canvas_draw_icon(canvas, 4, 22, &I_Error_18x18);
     }
 
-     for (int y = 0; y < CHIP8_SCREEN_H; y++) {
-         for (int x = 0; x < CHIP8_SCREEN_H; x++) {
-             if (model->state.screen[y][x] == 1) {
-                 canvas_set_color(canvas, ColorBlack);
-             } else {
-                 canvas_set_color(canvas, ColorWhite);
-             }
-             canvas_draw_dot(canvas, x, y);
-         }
-     }
 }
 
 static bool chip8_input_callback(InputEvent* event, void* context) {

@@ -20,7 +20,6 @@ struct Chip8Emulator {
     Chip8State st;
     string_t file_path;
     FuriThread* thread;
-    t_chip8_state* t_chip8_st;
 };
 
 
@@ -83,7 +82,8 @@ static int32_t chip8_worker(void* context) {
         }
 
         if (chip8->st.worker_state == WorkerStateRomLoaded) {
-            //t_chip8_execute_next_opcode();
+            t_chip8_execute_next_opcode(chip8->t_chip8_st);
+            t_chip8_tick(chip8->t_chip8_st);
         }
         
     }
@@ -104,8 +104,7 @@ Chip8Emulator* chip8_make_emulator(string_t file_path) {
     string_init(chip8->file_path);
     string_set(chip8->file_path, file_path);
     chip8->st.worker_state = WorkerStateLoadingRom;
-
-    chip8->t_chip8_st = t_chip8_init(furi_alloc);
+    chip8->st.t_chip8_state = t_chip8_init(furi_alloc);
 
     chip8->thread = furi_thread_alloc();
     furi_thread_set_name(chip8->thread, "Chip8Worker");

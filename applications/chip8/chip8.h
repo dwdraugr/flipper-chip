@@ -7,6 +7,7 @@ extern "C" {
 #include <furi.h>
 #include <m-string.h>
 #include <storage/storage.h>
+#include "emulator-core/flipper-chip.h"
 
 #define CHIP8_SCREEN_W 64
 #define CHIP8_SCREEN_H 32
@@ -22,7 +23,7 @@ typedef enum {
 
 typedef struct {
     WorkerState worker_state;
-    uint8_t** screen;
+    t_chip8_state* t_chip8_state;
 } Chip8State;
 
 Chip8Emulator* chip8_make_emulator(string_t file_path);
