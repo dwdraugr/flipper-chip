@@ -12,7 +12,6 @@
 static uint8_t randbyte();
 static void draw_sprite(t_chip8_state *state, uint8_t x, uint8_t y, uint8_t n);
 static void error_stop(t_chip8_state *state, uint16_t opcode);
-static bool t_chip8_is_rendering = false;
 
 t_chip8_state* t_chip8_init(void* (*system_malloc)(size_t))
 {
@@ -23,7 +22,7 @@ t_chip8_state* t_chip8_init(void* (*system_malloc)(size_t))
     state->I = 0;
     state->delay_timer = 0;
     state->sound_timer = 0;
-
+    state->go_render = false;
 
     state->memory = system_malloc(MEMORY_SIZE * sizeof(uint8_t));
     //	memset(state->memory, 0, MEMORY_SIZE);
@@ -197,6 +196,7 @@ void t_chip8_execute_next_opcode(t_chip8_state *state)
         break;
     case 0xD000:
         draw_sprite(state, state->V[x], state->V[y], n);
+        state->go_render = true;
         state->PC += 2;
         break;
     case 0xE000:
@@ -326,11 +326,6 @@ static void draw_sprite(t_chip8_state *state, uint8_t x, uint8_t y, uint8_t n)
             *pixel_pointer = *pixel_pointer ^ bit;
         }
     }
-}
-
-void t_chip8_toggle_rendering()
-{
-    t_chip8_is_rendering = !t_chip8_is_rendering;
 }
 
 static void error_stop(t_chip8_state* state, uint16_t opcode)

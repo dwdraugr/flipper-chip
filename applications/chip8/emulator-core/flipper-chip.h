@@ -34,6 +34,7 @@ typedef struct s_flipper_state
     uint8_t sound_timer;
     uint8_t **screen; // SCREEN_HEIGHT * SCREEN_WIDTH
     uint8_t *key; // KEYS_NUMBER
+    bool go_render;
 } t_chip8_state;
 
 // keyboard layout
@@ -67,6 +68,5 @@ void t_chip8_execute_next_opcode(t_chip8_state *state);
 void t_chip8_tick(t_chip8_state* state);
 uint8_t** t_chip8_get_screen(t_chip8_state* state);
 void t_chip8_free_memory(t_chip8_state* state, void (*system_free)(void*));
-void t_chip8_toggle_rendering();
 
 #endif //FLIPPER_CHIP_FLIPPER_CHIP_H

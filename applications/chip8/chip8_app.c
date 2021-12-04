@@ -31,7 +31,7 @@ Chip8App* chip8_app_alloc() {
     view_dispatcher_set_event_callback_context(app->view_dispatcher, app);
 
     view_dispatcher_set_tick_event_callback(
-        app->view_dispatcher, chip8_app_tick_event_callback, 500);
+        app->view_dispatcher, chip8_app_tick_event_callback, 100);
     view_dispatcher_set_custom_event_callback(
         app->view_dispatcher, chip8_app_custom_event_callback);
     view_dispatcher_set_navigation_event_callback(
