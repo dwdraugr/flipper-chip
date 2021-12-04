@@ -15,16 +15,14 @@ typedef struct {
 } Chip8Model;
 
 static void chip8_draw_callback(Canvas* canvas, void* _model) {
-    Chip8Model* model = acquire_mutex((ValueMutex*)_model, 25);
-    if (model == NULL) {
-        return;
-    }
+    Chip8Model* model = _model;
 
     if (model->state.worker_state == WorkerStateLoadingRom) {
         canvas_draw_icon(canvas, 4, 22, &I_Clock_18x18);
     }
 
     if (model->state.worker_state == WorkerStateRomLoaded) {
+        furi_check(osMutexAcquire(model->state.mtx, osWaitForever) == osOK);
         uint8_t** screen = t_chip8_get_screen(model->state.t_chip8_state);
 
         for (int y = 0; y < CHIP8_SCREEN_H; y++) {
@@ -37,13 +35,13 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
                 canvas_draw_dot(canvas, x, y);
             }
         }
+        furi_check(osMutexRelease(model->state.mtx) == osOK);
     }
 
     if (model->state.worker_state == WorkerStateRomLoadError) {
         canvas_draw_icon(canvas, 4, 22, &I_Error_18x18);
     }
 
-    release_mutex((ValueMutex*)_model, model);
 }
 
 static bool chip8_input_callback(InputEvent* event, void* context) {

@@ -75,8 +75,10 @@ static int32_t chip8_worker(void* context) {
         }
 
         if (chip8->st.worker_state == WorkerStateRomLoaded) {
+            furi_check(osMutexAcquire(chip8->st.mtx, osWaitForever) == osOK);
             t_chip8_execute_next_opcode(chip8->st.t_chip8_state);
             t_chip8_tick(chip8->st.t_chip8_state);
+            furi_check(osMutexRelease(chip8->st.mtx) == osOK);
         }
         
     }
@@ -98,6 +100,7 @@ Chip8Emulator* chip8_make_emulator(string_t file_path) {
     string_set(chip8->file_path, file_path);
     chip8->st.worker_state = WorkerStateLoadingRom;
     chip8->st.t_chip8_state = t_chip8_init(furi_alloc);
+    chip8->st.mtx = osMutexNew(NULL);
 
     chip8->thread = furi_thread_alloc();
     furi_thread_set_name(chip8->thread, "Chip8Worker");
@@ -111,6 +114,7 @@ Chip8Emulator* chip8_make_emulator(string_t file_path) {
 
 void chip8_close_emulator(Chip8Emulator* chip8) {
     furi_assert(chip8);
+    osMutexDelete(chip8->st.mtx);
     osThreadFlagsSet(furi_thread_get_thread_id(chip8->thread), WorkerEvtEnd);
     furi_thread_join(chip8->thread);
     furi_thread_free(chip8->thread);
