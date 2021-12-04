@@ -29,6 +29,10 @@ void chip8_scene_work_on_enter(void* context) {
     string_init(file_name);
 
     chip8_set_file_name(app->chip8_view, app->file_name);
+
+    string_printf(
+        file_name, "%s/%s%s", CHIP8_APP_PATH_FOLDER, app->file_name, CHIP8_APP_EXTENSION);
+
     app->chip8 = chip8_make_emulator(file_name);
 
     string_clear(file_name);

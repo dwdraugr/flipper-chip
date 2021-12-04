@@ -60,14 +60,15 @@ static int32_t chip8_worker(void* context) {
 
             FURI_LOG_I(WORKER_TAG, "File was opened, try read this");
 
-            chip8->st.worker_state = WorkerStateRomLoaded;
 
-            uint8_t rom_data[2048];
+            uint8_t* rom_data = furi_alloc(2048);
             FURI_LOG_I(WORKER_TAG, "2048 array gotten");
 
             read_rom_data(rom_file, rom_data);
 
             FURI_LOG_I(WORKER_TAG, "Rom data finished reading");
+
+            chip8->st.worker_state = WorkerStateRomLoaded;
 
 
             // uint16_t rom_size = read_rom_data(rom_file, rom_data);
@@ -88,6 +89,7 @@ static int32_t chip8_worker(void* context) {
 
 Chip8Emulator* chip8_make_emulator(string_t file_path) {
     furi_assert(file_path);
+    FURI_LOG_I(WORKER_TAG, "make emulator, file_path=", file_path);
 
     Chip8Emulator* chip8 = furi_alloc(sizeof(Chip8Emulator));
     string_init(chip8->file_path);
@@ -133,6 +135,7 @@ uint16_t read_rom_data(File* file, uint8_t* data) {
 
     while(1) {
         uint16_t bytes_were_read = storage_file_read(file, buff, buffer_size);
+        
         if (bytes_were_read == 0) {
             break;
         }

@@ -18,6 +18,7 @@ void chip8_scene_file_select_on_enter(void* context) {
     Chip8App* chip8 = context;
 
     if(chip8_file_select(chip8)) {
+        FURI_LOG_I("Chip8", "chip8_file_select, file_name = %s", chip8->file_name);
         scene_manager_next_scene(chip8->scene_manager, Chip8WorkView);
     } else {
         view_dispatcher_stop(chip8->view_dispatcher);
