@@ -22,6 +22,10 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
     }
 
     if (model->state.worker_state == WorkerStateRomLoaded) {
+        if (!model->state.t_chip8_state->go_render) {
+            return;
+        }
+
         uint8_t** screen = t_chip8_get_screen(model->state.t_chip8_state);
 
         for (int y = 0; y < CHIP8_SCREEN_H; y++) {
@@ -36,7 +40,8 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
                 //canvas_draw_dot(canvas, x, y);
             }
         }
-        FURI_LOG_I("chip-8", "ONE RENDER ITERATION");
+
+        model->state.t_chip8_state->go_render = false;
     }
 
     if (model->state.worker_state == WorkerStateRomLoadError) {

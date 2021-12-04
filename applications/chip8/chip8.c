@@ -75,9 +75,11 @@ static int32_t chip8_worker(void* context) {
         }
 
         if (chip8->st.worker_state == WorkerStateRomLoaded) {
+            if (chip8->st.t_chip8_state->go_render) {
+                continue;
+            }
             t_chip8_execute_next_opcode(chip8->st.t_chip8_state);
             //t_chip8_tick(chip8->st.t_chip8_state);
-            FURI_LOG_I(WORKER_TAG, "EXECUTE ONE OPCODE");
         }
         
     }
