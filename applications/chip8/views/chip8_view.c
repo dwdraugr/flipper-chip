@@ -25,14 +25,16 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
         furi_check(osMutexAcquire(model->state.mtx, osWaitForever) == osOK);
         uint8_t** screen = t_chip8_get_screen(model->state.t_chip8_state);
 
-        for (int y = 0; y < CHIP8_SCREEN_H; y++) {
-            for (int x = 0; x < CHIP8_SCREEN_W; x++) {
+        for (int y = 0; y < CHIP8_SCREEN_H * 2; y+=2) {
+            for (int x = 0; x < CHIP8_SCREEN_W * 2; x+=2) {
                 if (screen[y][x] == 1) {
                     canvas_set_color(canvas, ColorBlack);
                 } else {
                     canvas_set_color(canvas, ColorWhite);
                 }
-                canvas_draw_dot(canvas, x, y);
+
+                canvas_draw_box(canvas, x, y, 2, 2) {
+                //canvas_draw_dot(canvas, x, y);
             }
         }
         furi_check(osMutexRelease(model->state.mtx) == osOK);
