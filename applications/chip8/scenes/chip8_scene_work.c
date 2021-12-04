@@ -16,7 +16,8 @@ bool chip8_scene_work_on_event(void* context, SceneManagerEvent event) {
         chip8_toggle(app->chip8);
         consumed = true;
     } else if(event.type == SceneManagerEventTypeTick) {
-        chip8_set_state(app->chip8_view, chip8_get_state(app->chip8));
+        Chip8State* state = chip8_get_state(app->chip8);
+        chip8_set_state(app->chip8_view, state);
     }
     return consumed;
 }

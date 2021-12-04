@@ -23,33 +23,12 @@ struct Chip8Emulator {
 
 
 static int32_t chip8_worker(void* context) {
-    Chip8Emulator* chip8= context;
+    Chip8Emulator* chip8 = context;
 
+    FURI_LOG_I(WORKER_TAG, "Start furi record open");
+    Storage* furi_storage_record = furi_record_open("storage");
+    FURI_LOG_I(WORKER_TAG, "furi record opened");
 
-    // File* rom_file = storage_file_alloc(furi_record_open("storage"));
-    // bool is_file_opened = storage_file_open(
-    //                     rom_file,
-    //                     string_get_cstr(chip8->file_path),
-    //                     FSAM_READ,
-    //                     FSOM_OPEN_EXISTING
-    //                );
-
-
-    // if (!is_file_opened) {
-    //     FURI_LOG_I(WORKER_TAG, "Cannot open storage");
-    //     storage_file_close(rom_file);
-    //     storage_file_free(rom_file);
-    //     return 0;
-    // }
-
-
-    //uint8_t rom_data[2048];
-    //uint16_t rom_size = read_rom_data(rom_file, rom_data);
-    //read_rom_data(rom_file, rom_data);
-    // chip8->st.screen = furi_alloc(64);
-    // for (int y = 0; y < 64; y++) {
-    //     chip8->st.screen[y] = furi_alloc(32);
-    // }
 
 
     while(1) {
@@ -60,8 +39,44 @@ static int32_t chip8_worker(void* context) {
         }
 
         if (chip8->st.worker_state == WorkerStateLoadingRom) {
+            FURI_LOG_I(WORKER_TAG, "Start storage file alloc");
+            File* rom_file = storage_file_alloc(furi_storage_record);
+            FURI_LOG_I(WORKER_TAG, "Start storage file open, path = %s", chip8->file_path);
+            bool is_file_opened = storage_file_open(
+                                rom_file,
+                                string_get_cstr(chip8->file_path),
+                                FSAM_READ,
+                                FSOM_OPEN_EXISTING
+                        );
+
+
+            if (!is_file_opened) {
+                FURI_LOG_I(WORKER_TAG, "Cannot open storage");
+                storage_file_close(rom_file);
+                storage_file_free(rom_file);
+                chip8->st.worker_state = WorkerStateRomLoadError;
+                return 0;
+            }
+
+            FURI_LOG_I(WORKER_TAG, "File was opened, try read this");
+
             chip8->st.worker_state = WorkerStateRomLoaded;
+
+            uint8_t rom_data[2048];
+            FURI_LOG_I(WORKER_TAG, "2048 array gotten");
+
+            read_rom_data(rom_file, rom_data);
+
+            FURI_LOG_I(WORKER_TAG, "Rom data finished reading");
+
+
+            // uint16_t rom_size = read_rom_data(rom_file, rom_data);
+            // chip8->st.screen = furi_alloc(64);
+            // for (int y = 0; y < 64; y++) {
+            //     chip8->st.screen[y] = furi_alloc(32);
+            // }
         }
+        
     }
 
 

@@ -16,6 +16,9 @@ typedef struct {
 static void chip8_draw_callback(Canvas* canvas, void* _model) {
     Chip8Model* model = _model;
 
+
+    FURI_LOG_I("Chip8", "DRAW state number = %d", model->state.worker_state);
+
     if (model->state.worker_state == WorkerStateLoadingRom) {
         canvas_draw_icon(canvas, 4, 22, &I_Clock_18x18);
     }
@@ -41,6 +44,7 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
 }
 
 static bool chip8_input_callback(InputEvent* event, void* context) {
+    FURI_LOG_I("Chip8", "received input");
     furi_assert(context);
     Chip8View* chip8 = context;
     bool consumed = false;
@@ -110,6 +114,6 @@ void chip8_set_state(Chip8View* chip8, Chip8State* st) {
     with_view_model(
         chip8->view, (Chip8Model* model) {
             memcpy(&(model->state), st, sizeof(Chip8State));
-            return false;
+            return true;
         });
 }
