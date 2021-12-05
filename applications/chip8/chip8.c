@@ -80,7 +80,7 @@ static int32_t chip8_worker(void* context) {
             }
             t_chip8_execute_next_opcode(chip8->st.t_chip8_state);
             //t_chip8_tick(chip8->st.t_chip8_state);
-            FURI_LOG_I("CHIP8", "EXECUTE OPCODE %d, next opcode %d",
+            FURI_LOG_I("CHIP8", "EXECUTE OPCODE %X, next opcode %X",
                 chip8->st.t_chip8_state->current_opcode,
                 chip8->st.t_chip8_state->next_opcode
                 );
