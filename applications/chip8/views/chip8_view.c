@@ -15,6 +15,7 @@ struct Chip8View {
 typedef struct {
     char* file_name;
     Chip8State state;
+    uint8_t** backup_screen;
 } Chip8Model;
 
 static void chip8_draw_callback(Canvas* canvas, void* _model) {
@@ -26,7 +27,18 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
 
     if (model->state.worker_state == WorkerStateRomLoaded) {
         while (!model->state.t_chip8_state->go_render) {
-            continue;
+            for (int y = 0; y < CHIP8_SCREEN_H; y++) {
+                for (int x = 0; x < CHIP8_SCREEN_W; x++) {
+                    if (model->backup_screen[y][x] == 0) {
+                        canvas_set_color(canvas, ColorWhite);
+                    } else {
+                        canvas_set_color(canvas, ColorBlack);
+                    }
+                    canvas_draw_box(canvas, x * 2, y * 2, 2, 2);
+                    //canvas_draw_dot(canvas, x, y);
+                }
+            }
+            return;
         }
 
         uint8_t** screen = t_chip8_get_screen(model->state.t_chip8_state);
@@ -39,10 +51,12 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
                     canvas_set_color(canvas, ColorBlack);
                 }
                 canvas_draw_box(canvas, x * 2, y * 2, 2, 2);
+                model->backup_screen[y][x] = screen[y][x];
                 //canvas_draw_dot(canvas, x, y);
             }
         }
         model->state.t_chip8_state->go_render = false;
+
     }
 
     if (model->state.worker_state == WorkerStateRomLoadError) {
@@ -157,6 +171,15 @@ void chip8_set_file_name(Chip8View* chip8, char* name) {
     with_view_model(
         chip8->view, (Chip8Model* model) {
             model->file_name = name;
+            return false;
+        });
+}
+
+void chip8_set_backup_screen(Chip8View* chip8, uint8_t** screen) {
+    furi_assert(screen);
+    with_view_model(
+        chip8->view, (Chip8Model* model) {
+            model->backup_screen = screen;
             return false;
         });
 }

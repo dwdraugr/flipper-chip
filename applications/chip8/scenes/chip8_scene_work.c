@@ -13,7 +13,7 @@ void chip8_scene_back_callback(Chip8View* view, InputType type, void* context) {
     Chip8App* app = context;
     chip8_set_back_pressed(app->chip8);
     chip8_set_state(view, chip8_get_state(app->chip8));
-    view_dispatcher_send_custom_event(app->view_dispatcher, type);
+//    view_dispatcher_send_custom_event(app->view_dispatcher, type);
     view_dispatcher_stop(app->view_dispatcher);
 }
 
@@ -21,14 +21,14 @@ void chip8_scene_up_callback(InputType type, void* context) {
     furi_assert(context);
     Chip8App* app = context;
     chip8_set_up_pressed(app->chip8);
-    view_dispatcher_send_custom_event(app->view_dispatcher, type);
+//    view_dispatcher_send_custom_event(app->view_dispatcher, type);
 }
 
 void chip8_scene_down_callback(InputType type, void* context) {
     furi_assert(context);
     Chip8App* app = context;
     chip8_set_down_pressed(app->chip8);
-    view_dispatcher_send_custom_event(app->view_dispatcher, type);
+//    view_dispatcher_send_custom_event(app->view_dispatcher, type);
 }
 
 bool chip8_scene_work_on_event(void* context, SceneManagerEvent event) {
@@ -56,6 +56,10 @@ void chip8_scene_work_on_enter(void* context) {
 
     string_printf(
         file_name, "%s/%s%s", CHIP8_APP_PATH_FOLDER, app->file_name, CHIP8_APP_EXTENSION);
+
+    FURI_LOG_I("chip8_scene_work_on_enter", "START SET BACKUP SCREEN");
+    chip8_set_backup_screen(app->chip8_view, app->backup_screen);
+    FURI_LOG_I("chip8_scene_work_on_enter", "END SET BACKUP SCREEN");
 
     app->chip8 = chip8_make_emulator(file_name);
 

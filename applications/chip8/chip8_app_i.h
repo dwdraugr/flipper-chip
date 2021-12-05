@@ -24,6 +24,7 @@ struct Chip8App{
     DialogsApp* dialogs;
 
     char file_name[CHIP8_FILE_NAME_LEN+ 1];
+    uint8_t** backup_screen;
     Chip8View* chip8_view;
     Chip8Emulator* chip8;
 };
