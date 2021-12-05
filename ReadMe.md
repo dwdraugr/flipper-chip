@@ -1,4 +1,8 @@
-# Flipper Zero Firmware
+# Flipper Zero Firmware - CHIP8 emulator
+
+This is firmware version with integrated CHIP8 emulator. Just put your favourites roms on SD-card and play!
+
+# Original Description
 
 [![Discord](https://img.shields.io/discord/740930220399525928.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](http://flipperzero.one/discord)
 
