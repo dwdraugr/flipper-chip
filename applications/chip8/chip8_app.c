@@ -49,6 +49,7 @@ Chip8App* chip8_app_alloc() {
 }
 
 void chip8_app_free(Chip8App* app) {
+    FURI_LOG_I("CHIP8", "chip8_app_free started");
     furi_assert(app);
 
     view_dispatcher_remove_view(app->view_dispatcher, Chip8FileSelectView);

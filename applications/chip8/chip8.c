@@ -40,6 +40,7 @@ static int32_t chip8_worker(void* context) {
 
     while(1) {
         if (chip8->st.worker_state == WorkerStateBackPressed) {
+            FURI_LOG_I(WORKER_TAG, "WorkerStateBackPressed");
             break;
         }
 
@@ -92,29 +93,29 @@ static int32_t chip8_worker(void* context) {
                 continue;
             }
             t_chip8_execute_next_opcode(chip8->st.t_chip8_state);
-            //t_chip8_tick(chip8->st.t_chip8_state);
-            FURI_LOG_I("CHIP8", "EXECUTE OPCODE %X, next opcode %X",
+            FURI_LOG_I(
+                "chip8_executing", "current: 0x%X next: 0x%X",
                 chip8->st.t_chip8_state->current_opcode,
                 chip8->st.t_chip8_state->next_opcode
                 );
-            if (chip8->st.t_chip8_state->go_render) {
-                FURI_LOG_I(WORKER_TAG, "EXECUTE OPCODE, 0xD000 START RENDER");
-            }
+            delay(2);
+            //t_chip8_tick(chip8->st.t_chip8_state);
         }
         
     }
 
 
+    FURI_LOG_I("CHIP8", "Prepare to ending app");
     storage_file_close(rom_file);
     storage_file_free(rom_file);
     t_chip8_free_memory(chip8->st.t_chip8_state, free);
-
+    FURI_LOG_I("CHIP8", "End ending");
     return 0;
 }
 
 Chip8Emulator* chip8_make_emulator(string_t file_path) {
     furi_assert(file_path);
-    FURI_LOG_I(WORKER_TAG, "make emulator, file_path=", file_path);
+    FURI_LOG_I("CHIP8", "make emulator, file_path=", file_path);
 
     Chip8Emulator* chip8 = furi_alloc(sizeof(Chip8Emulator));
     string_init(chip8->file_path);
@@ -146,12 +147,14 @@ Chip8Emulator* chip8_make_emulator(string_t file_path) {
 }
 
 void chip8_close_emulator(Chip8Emulator* chip8) {
+    FURI_LOG_I("chip_8_close_emulator", "start");
     furi_assert(chip8);
     osThreadFlagsSet(furi_thread_get_thread_id(chip8->thread), WorkerEvtEnd);
     furi_thread_join(chip8->thread);
     furi_thread_free(chip8->thread);
     string_clear(chip8->file_path);
     free(chip8);
+    FURI_LOG_I("chip_8_close_emulator", "end");
 }
 
 void chip8_toggle(Chip8Emulator* chip8) {
@@ -186,4 +189,25 @@ uint16_t read_rom_data(File* file, uint8_t* data) {
     }
 
     return file_pointer;
+}
+
+void chip8_set_back_pressed(Chip8Emulator* chip8)
+{
+    chip8->st.worker_state = WorkerStateBackPressed;
+    chip8->st.t_chip8_state->go_render = true;
+    FURI_LOG_I(WORKER_TAG, "SET BACK PRESSED. EMULATION IS STOPPED");
+}
+
+void chip8_set_up_pressed(Chip8Emulator* chip8)
+{
+    chip8->st.t_chip8_state->go_render = true;
+    t_chip8_set_input(chip8->st.t_chip8_state, k_1);
+    FURI_LOG_I(WORKER_TAG, "UP PRESSED");
+}
+
+void chip8_set_down_pressed(Chip8Emulator* chip8)
+{
+    chip8->st.t_chip8_state->go_render = true;
+    t_chip8_set_input(chip8->st.t_chip8_state, k_4);
+    FURI_LOG_I(WORKER_TAG, "DOWN PRESSED");
 }

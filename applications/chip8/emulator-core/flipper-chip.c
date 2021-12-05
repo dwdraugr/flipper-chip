@@ -229,11 +229,12 @@ void t_chip8_execute_next_opcode(t_chip8_state *state)
                 {
                     state->V[x] = i;
                     isWaitInput = false;
-                    break;
+                    goto exit_input_wait;
                 }
                 isWaitInput = true;
                 register_number = x;
             }
+        exit_input_wait:
             state->PC += 2;
             break;
         case 0x15:
@@ -298,7 +299,7 @@ uint8_t** t_chip8_get_screen(t_chip8_state* state)
     return (uint8_t **) state->screen;
 }
 
-void setInput(t_chip8_state* state, t_keys key)
+void t_chip8_set_input(t_chip8_state* state, t_keys key)
 {
     state->key[key] = 1;
 }

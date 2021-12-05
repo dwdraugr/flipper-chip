@@ -7,6 +7,9 @@ struct Chip8View {
     View* view;
     Chip8ViewCallback callback;
     void* context;
+    Chip8ViewKeyBackCallback backCallback;
+    Chip8ViewKeyUpCallback upCallback;
+    Chip8ViewKeyDownCallback downCallback;
 };
 
 typedef struct {
@@ -22,13 +25,11 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
     }
 
     if (model->state.worker_state == WorkerStateRomLoaded) {
-        if (!model->state.t_chip8_state->go_render) {
-            return;
+        while (!model->state.t_chip8_state->go_render) {
+            continue;
         }
 
-        FURI_LOG_I("CHIP8", "RENDER START");
         uint8_t** screen = t_chip8_get_screen(model->state.t_chip8_state);
-        FURI_LOG_I("CHIP8", "RENDER START: SUCCESS GET SCREEN");
 
         for (int y = 0; y < CHIP8_SCREEN_H; y++) {
             for (int x = 0; x < CHIP8_SCREEN_W; x++) {
@@ -41,7 +42,6 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
                 //canvas_draw_dot(canvas, x, y);
             }
         }
-        FURI_LOG_I("CHIP8", "RENDER END");
         model->state.t_chip8_state->go_render = false;
     }
 
@@ -67,7 +67,18 @@ static bool chip8_input_callback(InputEvent* event, void* context) {
         if(event->key == InputKeyBack) {
             consumed = true;
             furi_assert(chip8->callback);
-            chip8->callback(InputTypeShort, chip8->context);
+            chip8->backCallback(chip8, InputTypeShort, chip8->context);
+        }
+
+        if(event->key == InputKeyUp) {
+            consumed = true;
+            furi_assert(chip8->upCallback);
+            chip8->upCallback(InputTypeShort, chip8->context);
+        }
+        if(event->key == InputKeyDown) {
+            consumed = true;
+            furi_assert(chip8->downCallback);
+            chip8->downCallback(InputTypeShort, chip8->context);
         }
     }
 
@@ -105,6 +116,39 @@ void chip8_set_ok_callback(Chip8View* chip8, Chip8ViewCallback callback, void* c
             chip8->callback = callback;
             chip8->context = context;
             return false;
+        });
+}
+
+void chip8_set_back_callback(Chip8View* chip8, Chip8ViewKeyBackCallback callback, void* context) {
+    furi_assert(chip8);
+    furi_assert(callback);
+    with_view_model(
+        chip8->view, (Chip8Model* model) {
+            chip8->backCallback = callback;
+            chip8->context = context;
+            return true;
+        });
+}
+
+void chip8_set_up_callback(Chip8View* chip8, Chip8ViewKeyUpCallback callback, void* context) {
+    furi_assert(chip8);
+    furi_assert(callback);
+    with_view_model(
+        chip8->view, (Chip8Model* model) {
+            chip8->upCallback = callback;
+            chip8->context = context;
+            return true;
+        });
+}
+
+void chip8_set_down_callback(Chip8View* chip8, Chip8ViewKeyDownCallback callback, void* context) {
+    furi_assert(chip8);
+    furi_assert(callback);
+    with_view_model(
+        chip8->view, (Chip8Model* model) {
+            chip8->downCallback = callback;
+            chip8->context = context;
+            return true;
         });
 }
 
