@@ -31,6 +31,13 @@ void chip8_scene_down_callback(InputType type, void* context) {
 //    view_dispatcher_send_custom_event(app->view_dispatcher, type);
 }
 
+void chip8_scene_release_callback(InputType type, void* context) {
+    furi_assert(context);
+    Chip8App* app = context;
+    chip8_release_keyboard(app->chip8);
+    //    view_dispatcher_send_custom_event(app->view_dispatcher, type);
+}
+
 bool chip8_scene_work_on_event(void* context, SceneManagerEvent event) {
     Chip8App* app = context;
     bool consumed = false;
@@ -71,6 +78,8 @@ void chip8_scene_work_on_enter(void* context) {
     chip8_set_back_callback(app->chip8_view, chip8_scene_back_callback, app);
     chip8_set_up_callback(app->chip8_view, chip8_scene_up_callback, app);
     chip8_set_down_callback(app->chip8_view, chip8_scene_down_callback, app);
+    chip8_set_release_callback(app->chip8_view, chip8_scene_release_callback, app);
+
 
     view_dispatcher_switch_to_view(app->view_dispatcher, Chip8WorkView);
 }

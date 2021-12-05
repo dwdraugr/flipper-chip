@@ -32,6 +32,8 @@ void chip8_close_emulator(Chip8Emulator* chip8);
 void chip8_set_back_pressed(Chip8Emulator* chip8);
 void chip8_set_up_pressed(Chip8Emulator* chip8);
 void chip8_set_down_pressed(Chip8Emulator* chip8);
+void chip8_release_keyboard(Chip8Emulator* chip8);
+
 
 
 Chip8State* chip8_get_state(Chip8Emulator* chip8);

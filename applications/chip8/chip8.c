@@ -211,3 +211,10 @@ void chip8_set_down_pressed(Chip8Emulator* chip8)
     t_chip8_set_input(chip8->st.t_chip8_state, k_4);
     FURI_LOG_I(WORKER_TAG, "DOWN PRESSED");
 }
+
+void chip8_release_keyboard(Chip8Emulator* chip8) {
+    chip8->st.t_chip8_state->go_render = true;
+    t_chip8_release_input(chip8->st.t_chip8_state);
+    FURI_LOG_I(WORKER_TAG, "chip8_release_keyboard Release input");
+}
+

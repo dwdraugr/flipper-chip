@@ -304,6 +304,14 @@ void t_chip8_set_input(t_chip8_state* state, t_keys key)
     state->key[key] = 1;
 }
 
+void t_chip8_release_input(t_chip8_state* state)
+{
+    for (int i = 0; i < KEYS_NUMBER; i++)
+    {
+        state->key[i] = 0;
+    }
+}
+
 static uint8_t randbyte()
 {
     return rand() % 256;

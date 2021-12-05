@@ -10,6 +10,7 @@ struct Chip8View {
     Chip8ViewKeyBackCallback backCallback;
     Chip8ViewKeyUpCallback upCallback;
     Chip8ViewKeyDownCallback downCallback;
+    Chip8ViewReleaseCallback releaseCallback;
 };
 
 typedef struct {
@@ -94,6 +95,10 @@ static bool chip8_input_callback(InputEvent* event, void* context) {
             furi_assert(chip8->downCallback);
             chip8->downCallback(InputTypeShort, chip8->context);
         }
+    }
+    if (event->type == InputTypeRelease)
+    {
+        chip8->releaseCallback(InputTypeShort, chip8->context);
     }
 
     return consumed;
@@ -192,3 +197,16 @@ void chip8_set_state(Chip8View* chip8, Chip8State* st) {
             return true;
         });
 }
+
+void chip8_set_release_callback(Chip8View* chip8, Chip8ViewReleaseCallback callback, void*
+                                                                                         context) {
+    furi_assert(chip8);
+    furi_assert(callback);
+    with_view_model(
+        chip8->view, (Chip8Model* model) {
+            chip8->releaseCallback = callback;
+            chip8->context = context;
+            return true;
+        });
+}
+
