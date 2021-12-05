@@ -35,6 +35,8 @@ typedef struct s_flipper_state
     uint8_t **screen; // SCREEN_HEIGHT * SCREEN_WIDTH
     uint8_t *key; // KEYS_NUMBER
     bool go_render;
+    int current_opcode;
+    int next_opcode;
 } t_chip8_state;
 
 // keyboard layout

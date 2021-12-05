@@ -23,6 +23,7 @@ t_chip8_state* t_chip8_init(void* (*system_malloc)(size_t))
     state->delay_timer = 0;
     state->sound_timer = 0;
     state->go_render = false;
+    state->next_opcode = 0;
 
     state->memory = system_malloc(MEMORY_SIZE * sizeof(uint8_t));
     //	memset(state->memory, 0, MEMORY_SIZE);
@@ -88,6 +89,7 @@ void t_chip8_execute_next_opcode(t_chip8_state *state)
         kk = 0x0A;
         x = register_number;
     }
+    state->current_opcode = opcode & 0xF000;
     switch (opcode & 0xF000)
     {
     case 0x0000:
@@ -271,6 +273,9 @@ void t_chip8_execute_next_opcode(t_chip8_state *state)
     default:
         error_stop(state, opcode);
     }
+    
+    state->next_opcode = state->memory[state->PC] << 8 | state->memory[state->PC + 1];
+    state->next_opcode &= 0xf000;
 }
 
 void t_chip8_tick(t_chip8_state* state)

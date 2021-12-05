@@ -79,10 +79,14 @@ static int32_t chip8_worker(void* context) {
                 continue;
             }
             t_chip8_execute_next_opcode(chip8->st.t_chip8_state);
+            //t_chip8_tick(chip8->st.t_chip8_state);
+            FURI_LOG_I("CHIP8", "EXECUTE OPCODE %d, next opcode %d",
+                chip8->st.t_chip8_state->current_opcode,
+                chip8->st.t_chip8_state->next_opcode
+                );
             if (chip8->st.t_chip8_state->go_render) {
                 FURI_LOG_I(WORKER_TAG, "EXECUTE OPCODE, 0xD000 START RENDER");
             }
-            //t_chip8_tick(chip8->st.t_chip8_state);
         }
         
     }
