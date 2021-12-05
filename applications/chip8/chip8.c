@@ -34,6 +34,9 @@ static int32_t chip8_worker(void* context) {
     File* rom_file = storage_file_alloc(furi_storage_record);
     FURI_LOG_I(WORKER_TAG, "Start storage file open, path = %s", chip8->file_path);
 
+    uint8_t* rom_data = furi_alloc(2048);
+    FURI_LOG_I(WORKER_TAG, "2048 array gotten");
+
 
     while(1) {
         if (chip8->st.worker_state == WorkerStateBackPressed) {
@@ -60,8 +63,6 @@ static int32_t chip8_worker(void* context) {
             FURI_LOG_I(WORKER_TAG, "File was opened, try read this");
 
 
-            uint8_t* rom_data = furi_alloc(2048);
-            FURI_LOG_I(WORKER_TAG, "2048 array gotten");
 
             int rom_len = read_rom_data(rom_file, rom_data);
 
@@ -70,6 +71,18 @@ static int32_t chip8_worker(void* context) {
             FURI_LOG_I(WORKER_TAG, "Load chip8 core data");
             t_chip8_load_game(chip8->st.t_chip8_state, rom_data, rom_len);
             FURI_LOG_I(WORKER_TAG, "chip8 core data loaded");
+
+            FURI_LOG_I(WORKER_TAG, "Wipe screen start");
+            for (int i = 0; i < CHIP8_SCREEN_H; i++)
+            {
+                FURI_LOG_I(WORKER_TAG, "Wipe screen line %d", i);
+                for (int j = 0; j < CHIP8_SCREEN_W; j++)
+                {
+                    chip8->st.t_chip8_state->screen[i][j] = 0;
+                }
+                delay(15);
+            }
+            FURI_LOG_I(WORKER_TAG, "Wipe screen end");
 
             chip8->st.worker_state = WorkerStateRomLoaded;
         }
@@ -108,6 +121,19 @@ Chip8Emulator* chip8_make_emulator(string_t file_path) {
     string_set(chip8->file_path, file_path);
     chip8->st.worker_state = WorkerStateLoadingRom;
     chip8->st.t_chip8_state = t_chip8_init(furi_alloc);
+
+//    FURI_LOG_I(WORKER_TAG, "Start wipe screen");
+//    delay(1500);
+//    for (int i = 0; i < CHIP8_SCREEN_H; i++)
+//    {
+//        FURI_LOG_I(WORKER_TAG, "Start wipe line %d", i);
+//        for (int j = 0; j < CHIP8_SCREEN_W; j++)
+//        {
+//            chip8->st.t_chip8_state->screen[i][j] = 0;
+//        }
+//    }
+//    FURI_LOG_I(WORKER_TAG, "End wipe screen");
+
 
     chip8->thread = furi_thread_alloc();
     furi_thread_set_name(chip8->thread, "Chip8Worker");

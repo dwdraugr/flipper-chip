@@ -27,7 +27,7 @@ t_chip8_state* t_chip8_init(void* (*system_malloc)(size_t))
 
     state->memory = system_malloc(MEMORY_SIZE * sizeof(uint8_t));
     //	memset(state->memory, 0, MEMORY_SIZE);
-    state->screen = system_malloc(SCREEN_HEIGHT * sizeof(uint8_t));
+    state->screen = system_malloc(SCREEN_HEIGHT * sizeof(size_t));
     for(int i = 0; i < SCREEN_HEIGHT; i++)
     {
         state->screen[i] = system_malloc(SCREEN_WIDTH * sizeof(uint8_t));
@@ -98,7 +98,10 @@ void t_chip8_execute_next_opcode(t_chip8_state *state)
         case 0x00E0:
             for (int i = 0; i < SCREEN_HEIGHT; i++)
             {
-                memset(state->screen[i], 0, SCREEN_WIDTH);
+                for(int j = 0; j < SCREEN_WIDTH; j++)
+                {
+                    state->screen[i][j] = 0;
+                }
             }
             state->PC += 2;
             break;
