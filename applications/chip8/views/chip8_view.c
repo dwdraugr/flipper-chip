@@ -97,15 +97,15 @@ static void chip8_draw_callback(Canvas* canvas, void* _model) {
                 screen[y][62],
                 screen[y][63]
             );
-            // for (int x = 0; x < CHIP8_SCREEN_W; x++) {
-            //     if (screen[y][x] == 1) {
-            //         canvas_set_color(canvas, ColorBlack);
-            //     } else {
-            //         canvas_set_color(canvas, ColorWhite);
-            //     }
-            //     canvas_draw_box(canvas, x * 2, y * 2, 2, 2);
-            //     //canvas_draw_dot(canvas, x, y);
-            // }
+            for (int x = 0; x < CHIP8_SCREEN_W; x++) {
+                if (screen[y][x] == 0) {
+                    canvas_set_color(canvas, ColorWhite);
+                } else {
+                    canvas_set_color(canvas, ColorBlack);
+                }
+                canvas_draw_box(canvas, x * 2, y * 2, 2, 2);
+                //canvas_draw_dot(canvas, x, y);
+            }
         }
         FURI_LOG_I("CHIP8", "RENDER END");
         model->state.t_chip8_state->go_render = false;
