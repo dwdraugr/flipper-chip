@@ -10,3 +10,8 @@ What we made:
 
 What we didn't made:
 + Controlling are unavailable, because CHIP-8 using specific async event management. But we tried :)
+
+How it looks like:
+
++ ![](https://db3pap002files.storage.live.com/y4maA8E4vAYfhDfvSW2OhnVrYQvw6LoZHfIv1zsyXg34hre387S-qRHZ9MEAy0XZ45Qp00I7lXyrM3TV2gHRtWfFy8NZlB4nltG2u5D3Ybw1Zkx6Th4hjmuXtS5f6FbKnW90xPQ1ojQTnc0gewHlpB-BHBpPLlfo6I-mzMJHoRbJCG5Xb23qWKtalfzPsuK8x0-?width=660&height=495&cropmode=none) 
++ [Video preview](https://onedrive.live.com/embed?cid=B7A595B5466F919F&resid=b7a595b5466f919f%2117640&authkey=ANHBuYHgmFSpv_s) with small demo
